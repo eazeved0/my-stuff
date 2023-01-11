@@ -12,7 +12,7 @@ export PGPASSFILE=~/.pgpass
 
 date=$(date +%d-%m-%y)
 echo "#!/bin/bash" |tee -a dump_all.sh 2>&1 1>/dev/null
-echo "Creating Datasets"
+echo "Creating Manifests"
 
 clusters=$(aws rds --region sa-east-1 describe-db-clusters | jq '.DBClusters[] | .DBClusterIdentifier' |tr -d \" |grep -v destaxa-dev-commons)
 for i in $clusters ; do
@@ -25,6 +25,6 @@ for i in $clusters ; do
 done
 sed -i.bu 's/null/postgres/' dump_all.sh
 aws s3 --region sa-east-1  cp dump_all.sh  s3://rds-backups-automation/pg_dump/dump_all.sh 2>&1 1>/dev/null
-echo "Dumping dbs to S3..."
+echo " ### Dumping dbs to S3... ####"
 chmod +x dump_all.sh && ./dump_all.sh
-echo "All done!"
+echo "#### All done! ####"
