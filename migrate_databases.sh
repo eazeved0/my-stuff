@@ -1,4 +1,4 @@
-bash
+/bin/bash
 cd /home/ssm-user
 echo "Installing dependencies..."
 curl -s https://raw.githubusercontent.com/eazeved0/my-stuff/main/pgdg.repo -O
