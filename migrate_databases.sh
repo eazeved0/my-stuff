@@ -1,3 +1,4 @@
+bash
 cd /home/ssm-user
 curl https://raw.githubusercontent.com/eazeved0/my-stuff/main/pgdg.repo -O
 sudo mv pgdg.repo /etc/yum.repos.d/
