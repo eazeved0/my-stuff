@@ -1,6 +1,3 @@
-curl -s -L https://raw.githubusercontent.com/eazeved0/my-stuff/main/migrate_databases.sh | bash -x
-
-
 echo "Dumping database destaxa_bpm"
 PGPASSFILE=~/.pgpass pg_dump -Fc  -h destaxa-bpm.cluster-ro-cvgax45xgjcg.sa-east-1.rds.amazonaws.com -p 5432 -U postgres destaxa_bpm | aws s3 cp - s3://rds-backups-automation/pg_dump/backup_destaxa-bpm-2023-01-11.dump
 echo "Dumping database destaxa_comission"
