@@ -1,11 +1,8 @@
- sudo amazon-linux-extras install epel -y
-
-cd $HOME
+cd /home/ssm-user
 curl https://raw.githubusercontent.com/eazeved0/my-stuff/main/pgdg.repo -O
- sudo mv pgdg.repo /etc/yum.repos.d/
+sudo mv pgdg.repo /etc/yum.repos.d/
+sudo amazon-linux-extras install epel -y && sudo yum install postgresql14
 curl https://raw.githubusercontent.com/eazeved0/my-stuff/main/.pgpass -O
-sudo yum makecache
-sudo yum install postgresql14
 sleep 5
 
 echo "Starting Dump"
