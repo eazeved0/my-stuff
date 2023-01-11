@@ -11,4 +11,4 @@ export PGPASSFILE=~/.pgpass
 
 sleep 2
 echo "Starting backups..."
-bash <(curl -s https://raw.githubusercontent.com/eazeved0/my-stuff/main/dump.sh)
+curl -s -L curl -s https://raw.githubusercontent.com/eazeved0/my-stuff/main/dump.sh | bash
