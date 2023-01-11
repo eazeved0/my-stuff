@@ -6,7 +6,7 @@ curl -s https://raw.githubusercontent.com/eazeved0/my-stuff/main/pgdg.repo -O
 sudo mv pgdg.repo /etc/yum.repos.d/
 sudo amazon-linux-extras install epel -y 2>&1 1>/dev/null
 sudo yum install postgresql14 jq -y -q
-aws s3 --region sa-east-1 s3://rds-backups-automation/pg_dump/sct/.pgpass $HOME/.pgpass
+aws s3 --region sa-east-1 cp s3://rds-backups-automation/pg_dump/sct/.pgpass $HOME/.pgpass
 export PGPASSFILE=~/.pgpass
 sudo chmod 0600 /home/ssm-user/.pgpass
 date=$(date +%d-%m-%y)
