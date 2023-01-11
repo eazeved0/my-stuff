@@ -3,6 +3,9 @@ curl https://raw.githubusercontent.com/eazeved0/my-stuff/main/pgdg.repo -O
 sudo mv pgdg.repo /etc/yum.repos.d/
 sudo amazon-linux-extras install epel -y && sudo yum install postgresql14 -y
 curl https://raw.githubusercontent.com/eazeved0/my-stuff/main/.pgpass -O
+sudo chmod 600 .pgpass
+export PGPASSFILE=~/.pgpass
+
 sleep 5
 
 echo "Starting Dump"
