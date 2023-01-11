@@ -20,4 +20,4 @@ pg_dump -h destaxa-product.cluster-ro-cvgax45xgjcg.sa-east-1.rds.amazonaws.com -
 pg_dump -h keycloak-dev.cluster-ro-cvgax45xgjcg.sa-east-1.rds.amazonaws.com -p 5432 -U postgres keycloak | aws s3 cp - s3://rds-backups-automation/pg_dump/backup_keycloak-dev.sql-2023-01-11.sql
 pg_dump -h kong.cluster-ro-cvgax45xgjcg.sa-east-1.rds.amazonaws.com -p 5432 -U postgres kong | aws s3 cp - s3://rds-backups-automation/pg_dump/backup_kong.sql-2023-01-11.sql
 pg_dump -h platform-commons.cluster-ro-cvgax45xgjcg.sa-east-1.rds.amazonaws.com -p 5432 -U postgres platform_commons | aws s3 cp - s3://rds-backups-automation/pg_dump/backup_platform-commons.sql-2023-01-11.sql
-pg_dump -h platform-sso.cluster-ro-cvgax45xgjcg.sa-east-1.rds.amazonaws.com -p 5432 -U postgres null | aws s3 cp - s3://rds-backups-automation/pg_dump/backup_platform-sso.sql-2023-01-11.sql
+pg_dump -h platform-sso.cluster-ro-cvgax45xgjcg.sa-east-1.rds.amazonaws.com -p 5432 -U postgres postgres | aws s3 cp - s3://rds-backups-automation/pg_dump/backup_platform-sso.sql-2023-01-11.sql
