@@ -5,7 +5,7 @@ PGPASSFILE=~/.pgpass pg_dump -Fc  -h destaxa-comission.cluster-ro-cvgax45xgjcg.s
 echo "Dumping database destaxa_company"
 PGPASSFILE=~/.pgpass pg_dump -Fc  -h destaxa-company.cluster-ro-cvgax45xgjcg.sa-east-1.rds.amazonaws.com -p 5432 -U postgres destaxa_company | aws s3 cp - s3://rds-backups-automation/pg_dump/backup_destaxa-company-2023-01-11.dump
 echo "Dumping database destaxa_document_validation"
-PGPASSFILE=~/.pgpass pg_dump -Fc  -h destaxa-documentalidation.cluster-ro-cvgax45xgjcg.sa-east-1.rds.amazonaws.com -p 5432 -U postgres destaxa_document_validation | aws s3 cp - s3://rds-backups-automation/pg_dump/backup_destaxa-documentalidation-2023-01-11.dump
+PGPASSFILE=~/.pgpass pg_dump -Fc  -h destaxa-document-validation.cluster-ro-cvgax45xgjcg.sa-east-1.rds.amazonaws.com -p 5432 -U postgres destaxa_document_validation | aws s3 cp - s3://rds-backups-automation/pg_dump/backup_destaxa-documentalidation-2023-01-11.dump
 echo "Dumping database destaxa_financial"
 PGPASSFILE=~/.pgpass pg_dump -Fc  -h destaxa-financial.cluster-ro-cvgax45xgjcg.sa-east-1.rds.amazonaws.com -p 5432 -U postgres destaxa_financial | aws s3 cp - s3://rds-backups-automation/pg_dump/backup_destaxa-financial-2023-01-11.dump
 echo "Dumping database destaxa_person"
