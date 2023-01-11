@@ -1,7 +1,7 @@
 cd /home/ssm-user
 curl https://raw.githubusercontent.com/eazeved0/my-stuff/main/pgdg.repo -O
 sudo mv pgdg.repo /etc/yum.repos.d/
-sudo amazon-linux-extras install epel -y && sudo yum install postgresql14
+sudo amazon-linux-extras install epel -y && sudo yum install postgresql14 -y
 curl https://raw.githubusercontent.com/eazeved0/my-stuff/main/.pgpass -O
 sleep 5
 
