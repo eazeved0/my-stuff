@@ -10,30 +10,21 @@ aws s3 --region sa-east-1 cp s3://rds-backups-automation/pg_dump/sct/.pgpass $HO
 export PGPASSFILE=~/.pgpass
 sudo chmod 0600 /home/ssm-user/.pgpass
 date=$(date +%d-%m-%y)
-authrds="destaxa-dev-auth-instance-1.cvgax45xgjcg.sa-east-1.rds.amazonaws.com"
-backofficerds="destaxa-dev-backoffice-instance-1.cvgax45xgjcg.sa-east-1.rds.amazonaws.com"
 echo "#!/bin/bash" |tee -a dump_all.sh 2>&1 1>/dev/null
 
-echo "Downloading Dumps..."
-mkdir -p db_dumps/auth && mkdir db_dumps/backoffice
+echo "Creating Manifests"
 
-backoffice=$(aws rds --region sa-east-1 describe-db-clusters | jq '.DBClusters[] | .DBClusterIdentifier' |tr -d \" |grep -Ev 'kong|keycloak')
-for i in $backoffice ; do
-  aws s3 cp s3://rds-backups-automation/pg_dump/backup_$i-$date.dump db_dumps/backoffice/
+clusters=$(aws rds --region sa-east-1 describe-db-clusters | jq '.DBClusters[] | .DBClusterIdentifier' |tr -d \" |grep -v destaxa-dev-commons)
+for i in $clusters ; do
+	endpoint=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .ReaderEndpoint' |tr -d \")
 	username=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .MasterUsername' |tr -d \")
 	database=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .DatabaseName' |tr -d \")
-	echo "Restoring DB $database into Aurora BackOffice Cluster"
-	PGPASSFILE=~/.pgpass psql -h $i -p 5432 -U $username $database < db_dumps/backoffice/backup_$i-$date.dump"
-  echo "Done restoring DBs to Aurora BackOffice Cluster"
+	echo "echo \"Creating $database Backup\" " |tee -a dump_all.sh 2>&1 1>/dev/null
+	echo "PGPASSFILE=~/.pgpass pg_dump -Fc -h $endpoint -p 5432 -U $username $database | aws s3 cp - s3://rds-backups-automation/pg_dump/backup_$i-$date.dump" |tee -a dump_all.sh 2>&1 1>/dev/null
+	chmod +x dump_all.sh
 done
-
-for i in $(aws rds --region sa-east-1 describe-db-clusters | jq '.DBClusters[] | .DBClusterIdentifier' |tr -d \" |grep -E 'kong|keycloak') ; do
-  aws s3 cp s3://rds-backups-automation/pg_dump/backup_$i-$date.dump db_dumps/auth/
-	username=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .MasterUsername' |tr -d \")
-	database=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .DatabaseName' |tr -d \")
-	echo "Restoring DB $database into Aurora Auth Cluster"
-	PGPASSFILE=~/.pgpass psql -h $i -p 5432 -U $username $database < db_dumps/auth/backup_$i-$date.dump"
-  echo "Done restoring DBs to Aurora Auth Cluster"
-done  
-
+sed -i.bu 's/null/postgres/' dump_all.sh
+aws s3 --region sa-east-1  cp dump_all.sh  s3://rds-backups-automation/pg_dump/dump_all.sh 2>&1 1>/dev/null
+echo " ### Dumping dbs to S3... ####"
+chmod +x dump_all.sh && ./dump_all.sh
 echo "#### All done! ####"
