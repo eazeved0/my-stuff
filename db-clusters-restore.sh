@@ -14,6 +14,7 @@ authrds="destaxa-dev-auth-instance-1.cvgax45xgjcg.sa-east-1.rds.amazonaws.com"
 backofficerds="destaxa-dev-backoffice-instance-1.cvgax45xgjcg.sa-east-1.rds.amazonaws.com"
 
 echo "Downloading Dumps..."
+[[ -d db_dumps/auth ]] && rm -r db_dumps/auth
 mkdir -p db_dumps/auth && mkdir db_dumps/backoffice
 
 backoffice=$(aws rds --region sa-east-1 describe-db-clusters | jq '.DBClusters[] | .DBClusterIdentifier' |tr -d \" |grep -Ev 'kong|keycloak|destaxa-dev-commons|destaxa-dev-auth|destaxa-dev-backoffice|destaxa-bpm')
