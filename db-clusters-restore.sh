@@ -27,11 +27,11 @@ for i in $backoffice ; do
 done
 
 for auth in $(aws rds --region sa-east-1 describe-db-clusters | jq '.DBClusters[] | .DBClusterIdentifier' |tr -d \" |grep -E 'kong|keycloak') ; do
-  aws s3 cp s3://rds-backups-automation/pg_dump/backup_$i-$date.sql db_dumps/auth/
+  aws s3 cp s3://rds-backups-automation/pg_dump/backup_$auth-$date.sql db_dumps/auth/
 	username=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .MasterUsername' |tr -d \")
 	database=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .DatabaseName' |tr -d \")
 	echo "Restoring DB $auth into Aurora Auth Cluster"
-	PGPASSFILE=~/.pgpass pg_restore --create -Ft -h $authrds -U $username -C -d postgres < db_dumps/auth/backup_$i-$date.sql
+	PGPASSFILE=~/.pgpass pg_restore --create -Ft -h $authrds -U $username -C -d postgres < db_dumps/auth/backup_$auth-$date.sql
   echo "Done restoring DBs to Aurora Auth Cluster"
 done  
 
