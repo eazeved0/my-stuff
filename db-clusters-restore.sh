@@ -12,18 +12,17 @@ sudo chmod 0600 /home/ssm-user/.pgpass
 date=$(date +%d-%m-%y)
 authrds="destaxa-dev-auth-instance-1.cvgax45xgjcg.sa-east-1.rds.amazonaws.com"
 backofficerds="destaxa-dev-backoffice-instance-1.cvgax45xgjcg.sa-east-1.rds.amazonaws.com"
-echo "#!/bin/bash" |tee -a dump_all.sh 2>&1 1>/dev/null
 
 echo "Downloading Dumps..."
 mkdir -p db_dumps/auth && mkdir db_dumps/backoffice
 
-backoffice=$(aws rds --region sa-east-1 describe-db-clusters | jq '.DBClusters[] | .DBClusterIdentifier' |tr -d \" |grep -Ev 'kong|keycloak')
+backoffice=$(aws rds --region sa-east-1 describe-db-clusters | jq '.DBClusters[] | .DBClusterIdentifier' |tr -d \" |grep -Ev 'kong|keycloak|destaxa-dev-commons|destaxa-dev-auth|destaxa-dev-backoffice|destaxa-bpm')
 for i in $backoffice ; do
   aws s3 cp s3://rds-backups-automation/pg_dump/backup_$i-$date.sql db_dumps/backoffice/
 	username=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .MasterUsername' |tr -d \")
 	database=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .DatabaseName' |tr -d \")
 	echo "Restoring DB $database into Aurora BackOffice Cluster"
-	PGPASSFILE=~/.pgpass pg_restore -Ft -h $i -U $username -C -d $database < db_dumps/backoffice/backup_$i-$date.sql"
+	PGPASSFILE=~/.pgpass pg_restore --create -Ft -h $backofficerds -U $username -C -d $database < db_dumps/backoffice/backup_$i-$date.sql"
   echo "Done restoring DBs to Aurora BackOffice Cluster"
 done
 
@@ -32,7 +31,7 @@ for auth in $(aws rds --region sa-east-1 describe-db-clusters | jq '.DBClusters[
 	username=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .MasterUsername' |tr -d \")
 	database=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .DatabaseName' |tr -d \")
 	echo "Restoring DB $auth into Aurora Auth Cluster"
-	PGPASSFILE=~/.pgpass pg_restore -Ft -h $i -U $username -C -d $database < db_dumps/auth/backup_$i-$date.sql"
+	PGPASSFILE=~/.pgpass pg_restore --create -Ft -h $authrds -U $username -C -d $database < db_dumps/auth/backup_$i-$date.sql"
   echo "Done restoring DBs to Aurora Auth Cluster"
 done  
 
