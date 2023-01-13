@@ -10,11 +10,12 @@ aws s3 --region sa-east-1 cp s3://rds-backups-automation/pg_dump/sct/.pgpass $HO
 export PGPASSFILE=~/.pgpass
 sudo chmod 0600 /home/ssm-user/.pgpass
 date=$(date +%d-%m-%y)
-echo "#!/bin/bash" |tee dump_all.sh 2>&1 1>/dev/null
 
+
+echo "#!/bin/bash" |tee dump_all.sh 2>&1 1>/dev/null
 echo "Preparing Manifests"
 
-clusters=$(aws rds --region sa-east-1 describe-db-clusters | jq '.DBClusters[] | .DBClusterIdentifier' |tr -d \" |grep -Ev 'destaxa-dev-commons|destaxa-dev-auth|destaxa-dev-backoffice')
+clusters=$(aws rds --region sa-east-1 describe-db-clusters | jq '.DBClusters[] | .DBClusterIdentifier' |tr -d \" |grep -Ev 'destaxa-dev-commons|destaxa-dev-auth|destaxa-dev-backoffice|destaxa-bpm')
 for i in $clusters ; do
 	endpoint=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .ReaderEndpoint' |tr -d \")
 	username=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .MasterUsername' |tr -d \")
