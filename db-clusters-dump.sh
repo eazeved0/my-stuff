@@ -10,7 +10,7 @@ aws s3 --region sa-east-1 cp s3://rds-backups-automation/pg_dump/sct/.pgpass $HO
 export PGPASSFILE=~/.pgpass
 sudo chmod 0600 /home/ssm-user/.pgpass
 date=$(date +%d-%m-%y)
-echo "#!/bin/bash" |tee -a dump_all.sh 2>&1 1>/dev/null
+echo "#!/bin/bash" |tee dump_all.sh 2>&1 1>/dev/null
 
 echo "Preparing Manifests"
 
@@ -20,11 +20,10 @@ for i in $clusters ; do
 	username=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .MasterUsername' |tr -d \")
 	database=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .DatabaseName' |tr -d \")
 	echo "echo \"Creating $database Backup\" " |tee -a dump_all.sh 2>&1 1>/dev/null
-	echo "PGPASSFILE=~/.pgpass pg_dump --create -s -h $endpoint -U $username -d $database | aws s3 cp - s3://rds-backups-automation/pg_dump/backup_$i-$date.sql" |tee -a dump_all.sh 2>&1 1>/dev/null
-	chmod +x dump_all.sh
+	echo "PGPASSFILE=~/.pgpass pg_dump -Ft --create -s -h $endpoint -U $username -d $database | aws s3 cp - s3://rds-backups-automation/pg_dump/backup_$i-$date.sql" |tee -a dump_all.sh 2>&1 1>/dev/null
 done
 sed -i.bu 's/null/postgres/' dump_all.sh
 aws s3 --region sa-east-1  cp dump_all.sh  s3://rds-backups-automation/pg_dump/dump_all.sh 2>&1 1>/dev/null
 echo " ### Dumping dbs to S3... ####"
-chmod +x dump_all.sh && ./dump_all.sh
+bash ./dump_all.sh
 echo "#### All done! ####"
