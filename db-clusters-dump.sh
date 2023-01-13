@@ -12,7 +12,7 @@ sudo chmod 0600 /home/ssm-user/.pgpass
 date=$(date +%d-%m-%y)
 echo "#!/bin/bash" |tee -a dump_all.sh 2>&1 1>/dev/null
 
-echo "Creating Manifests"
+echo "Preparing Manifests"
 
 clusters=$(aws rds --region sa-east-1 describe-db-clusters | jq '.DBClusters[] | .DBClusterIdentifier' |tr -d \" |grep -Ev 'destaxa-dev-commons|destaxa-auth|destaxa-backoffice')
 for i in $clusters ; do
