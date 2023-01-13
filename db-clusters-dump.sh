@@ -14,7 +14,7 @@ echo "#!/bin/bash" |tee -a dump_all.sh 2>&1 1>/dev/null
 
 echo "Preparing Manifests"
 
-clusters=$(aws rds --region sa-east-1 describe-db-clusters | jq '.DBClusters[] | .DBClusterIdentifier' |tr -d \" |grep -Ev 'destaxa-dev-commons|destaxa-auth|destaxa-backoffice')
+clusters=$(aws rds --region sa-east-1 describe-db-clusters | jq '.DBClusters[] | .DBClusterIdentifier' |tr -d \" |grep -Ev 'destaxa-dev-commons|destaxa-dev-auth|destaxa-dev-backoffice')
 for i in $clusters ; do
 	endpoint=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .ReaderEndpoint' |tr -d \")
 	username=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .MasterUsername' |tr -d \")
