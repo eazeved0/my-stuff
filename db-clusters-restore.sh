@@ -10,8 +10,8 @@ aws s3 --region sa-east-1 cp s3://rds-backups-automation/pg_dump/sct/.pgpass $HO
 export PGPASSFILE=~/.pgpass
 sudo chmod 0600 /home/ssm-user/.pgpass
 date=$(date +%d-%m-%y)
-authrds="destaxa-dev-auth-instance-1.cvgax45xgjcg.sa-east-1.rds.amazonaws.com"
-backofficerds="destaxa-dev-backoffice-instance-1.cvgax45xgjcg.sa-east-1.rds.amazonaws.com"
+authrds="destaxa-dev-auth.cvgax45xgjcg.sa-east-1.rds.amazonaws.com"
+backofficerds="destaxa-dev-backoffice.cvgax45xgjcg.sa-east-1.rds.amazonaws.com"
 
 echo "Downloading Dumps..."
 [[ -d db_dumps/auth ]] && rm -r db_dumps/auth
