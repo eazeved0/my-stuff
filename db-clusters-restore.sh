@@ -17,7 +17,7 @@ echo "Downloading Dumps..."
 [[ -d db_dumps/auth ]] && rm -r db_dumps/auth
 mkdir -p db_dumps/auth && mkdir db_dumps/backoffice
 
-backoffice=$(aws rds --region sa-east-1 describe-db-clusters | jq '.DBClusters[] | .DBClusterIdentifier' |tr -d \" |grep -Ev 'kong|keycloak|destaxa-dev-commons|destaxa-dev-auth|destaxa-dev-backoffice|destaxa-bpm')
+backoffice=$(aws rds --region sa-east-1 describe-db-clusters | jq '.DBClusters[] | .DBClusterIdentifier' |tr -d \" |grep -Ev 'kong|postgres|keycloak|destaxa-dev-commons|destaxa-dev-auth|destaxa-dev-backoffice|destaxa-bpm')
 for i in $backoffice ; do
   aws s3 cp s3://rds-backups-automation/pg_dump/backup_$i-$date.sql db_dumps/backoffice/
 	username=$(aws rds --region sa-east-1  describe-db-clusters --db-cluster-identifier $i |jq '.DBClusters[] .MasterUsername' |tr -d \")
