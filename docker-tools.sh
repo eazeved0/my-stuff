@@ -4,9 +4,9 @@ DIR=$HOME/local/bin
 
 mkdir -p $DIR >/dev/null 2>&1
 
-curl -sLo $DIR/docker-ps http://eazevedo.cloud/dops
-curl -sLo $DIR/docker-shell https://eazevedo.cloud/docker-shell
-curl -sLo $DIR/docker-logs https://eazevedo.cloud/docker-logs
+curl -# -Lo $DIR/docker-ps http://eazevedo.cloud/dops
+curl -# -Lo $DIR/docker-shell https://eazevedo.cloud/docker-shell
+curl -# -Lo $DIR/docker-logs https://eazevedo.cloud/docker-logs
 
 chmod +x $DIR/docker*
 
