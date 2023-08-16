@@ -29,3 +29,6 @@ echo -e "${blue}Use dolog to interactively see docker logs (use -f to watch logs
 echo -e "${green} \$ dolog (or dolog -f)\n"
 echo -e "${blue}Use dosh to interactively have access to docker terminal:"
 echo -e "${green} \$ dosh\n"
+
+echo -e "${red} !! Update your current bash session to use immediately:"
+echo -e "${green}$ source $HOME/.bashrc "
