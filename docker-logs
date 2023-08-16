@@ -1,0 +1,35 @@
+#!/bin/bash
+
+CONTAINERS=`docker ps | awk 'NR==1 {offset=index($0,"NAMES")};NR>1{print substr($0,offset)}' | sort -f | tr "\n" " "`
+
+echo
+echo "Choose a Docker container:"
+i=1
+for container in $CONTAINERS
+do
+  echo "$((i++)) : $container"
+done
+
+read MYCHOICE
+CHOSEN=`echo $CONTAINERS | cut -d' ' -f$MYCHOICE 2>/dev/null`
+
+if [ "$CHOSEN" = "" ]; then
+  echo Invalid option
+  exit
+fi
+
+if [ "$1" = "-f" ]; then
+  docker logs -f $CHOSEN
+else
+  # try running bash, if exit code 126 then try running sh
+  for SHELL in bash sh
+  do
+    clear
+    tput sgr0
+    docker logs $CHOSEN
+    if [ $? -ne 126 ]; then
+      break
+    fi
+  done
+fi
+
